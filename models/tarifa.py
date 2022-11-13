@@ -17,7 +17,7 @@ class Tarifa():
         cursor = con.cursor()
 
         #Preparar la consulta SQL
-        sql = "SELECT  ta.id, monto_maximo, rubro_id, ru.nombre AS rubro, sede_id, se.nombre AS sede FROM  tarifa ta INNER	JOIN  rubro ru ON  ta.rubro_id = ru.id INNER JOIN  sede se ON  ta.sede_id = se.id WHERE se.id = %s"
+        sql = "SELECT  ta.id, monto_maximo, rubro_id, ru.nombre AS rubro,ru.se_calcula_por_dia, sede_id, se.nombre AS sede FROM  tarifa ta INNER	JOIN  rubro ru ON  ta.rubro_id = ru.id INNER JOIN  sede se ON  ta.sede_id = se.id WHERE se.id = %s"
 
         #Ejecutar la consulta
         cursor.execute(sql,[sede_id])
