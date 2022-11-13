@@ -13,7 +13,7 @@ class Sesion():
       #Creation cursor
       cursor = con.cursor()
       #Query sql
-      sql = 'SELECT id,nombres,apellidos,email,estado_usuario,rol_id FROM usuario WHERE email=%s and password=%s'
+      sql = 'SELECT * FROM usuario WHERE email=%s and password=%s'
       #Execute SQL query
       cursor.execute(sql,[self.email,self.password])
       #Get data from cursor
