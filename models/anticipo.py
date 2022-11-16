@@ -72,7 +72,7 @@ class Anticipo():
         cursor = con.cursor()
 
         # Preparar la consulta SQL
-        sql = "SELECT an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.usuario_id=%s"
+        sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.usuario_id=%s"
 
         # Ejecutar la consulta
         cursor.execute(sql, [docente_id])
@@ -98,11 +98,11 @@ class Anticipo():
             # Crear un cursor
             cursor = con.cursor()
             if estado_id == 0 :
-                sql = "SELECT an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, es.descripcion AS estado, CONCAT (doc.nombres, ', ', doc.apellidos) AS docente FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) INNER JOIN usuario AS doc on (doc.id = an.usuario_id)"
+                sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, es.descripcion AS estado, CONCAT (doc.nombres, ', ', doc.apellidos) AS docente FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) INNER JOIN usuario AS doc on (doc.id = an.usuario_id)"
                 cursor.execute(sql)
 
             else :
-              sql = "SELECT an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, es.descripcion AS estado, CONCAT (doc.nombres, ', ', doc.apellidos) AS docente FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) INNER JOIN usuario AS doc on (doc.id = an.usuario_id) WHERE an.estado_anticipo_id=%s"
+              sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, es.descripcion AS estado, CONCAT (doc.nombres, ', ', doc.apellidos) AS docente FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) INNER JOIN usuario AS doc on (doc.id = an.usuario_id) WHERE an.estado_anticipo_id=%s"
               cursor.execute(sql, [estado_id])
 
             # Almacenar los datos que devuelva de la conulsta
@@ -126,7 +126,7 @@ class Anticipo():
 
         # Crear un cursor
         cursor = con.cursor()
-        sql = "SELECT an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, es.descripcion AS estado, CONCAT (doc.nombres, ', ', doc.apellidos) AS docente FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) INNER JOIN usuario AS doc on (doc.id = an.usuario_id) WHERE an.estado_anticipo_id = 3"
+        sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, es.descripcion AS estado, CONCAT (doc.nombres, ', ', doc.apellidos) AS docente FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) INNER JOIN usuario AS doc on (doc.id = an.usuario_id) WHERE an.estado_anticipo_id = 3"
         cursor.execute(sql)
         # Almacenar los datos que devuelva de la conulsta
         datos = cursor.fetchall()
