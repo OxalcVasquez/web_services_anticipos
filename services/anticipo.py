@@ -43,6 +43,23 @@ def listar_anticipos_docente():
         return jsonify(datos), 401
 
 
+@ws_anticipo.route('/anticipos/docente/listar/estado', methods=['POST'])
+@vt.validar_token
+def listar_anticipos_docente_estado():
+    if request.method == 'POST':
+        if not 'docente_id' in request.form:
+          return jsonify({'status': False, 'data': '', 'message': 'Falta docente'}), 403
+        else:
+            docente_id = request.form['docente_id']
+            estado = request.form['estado']
+            obj = Anticipo()
+            rpta_anticipos_docente = obj.listar_anticipos_docente_estado(docente_id,estado)
+            datos = json.loads(rpta_anticipos_docente)
+            return jsonify(datos), 200
+    else:
+        return jsonify(datos), 401
+
+
 @ws_anticipo.route('/anticipos/jefe/listar', methods=['POST'])
 @vt.validar_token
 def listar_anticipos_jefe():
