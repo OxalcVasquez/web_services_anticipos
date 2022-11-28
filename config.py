@@ -1,8 +1,8 @@
 class Config():
-    DB_HOST = 'containers-us-west-102.railway.app'
-    DB_PORT = 5877
+    DB_HOST = 'containers-us-west-42.railway.app'
+    DB_PORT = 6962
     DB_USER = 'root'
-    DB_PASSWORD = 'stnerz0TPyiLdiVP6WGA'
+    DB_PASSWORD = 'RIDmvKYn4sl7l4fImybd'
     DB_NAME ='railway'
 
 class SecretKey():
