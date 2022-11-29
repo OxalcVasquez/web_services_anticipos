@@ -169,7 +169,7 @@ class Informe_gasto():
 
 
                     #Generate total amount
-                    sql = "UPDATE informe_gasto set estado_id= %s  WHERE id = %s"
+                    sql = "UPDATE informe_gasto set estado_id= %s  WHERE anticipo_id = %s"
                     cursor.execute(sql, [estado_id, id])
 
 
