@@ -89,3 +89,21 @@ def listar_anticipos_admin():
         return jsonify(datos), 200
     else:
         return jsonify(datos), 401
+
+@ws_anticipo.route('/anticipo/evaluar', methods=['POST'])
+@vt.validar_token #f
+def actualizar_anticipo():
+    if request.method == 'POST':
+        descripcion = request.form['descripcion']
+        estado_anticipo_id = request.form['estado_anticipo_id']
+        id = request.form['id']
+        usuario_id = request.form['usuario_evaluador_id']
+
+        obj_anticipo = Anticipo(descripcion)
+        rpta_JSON = obj_anticipo.actualizarEstado(estado_anticipo_id, id, usuario_id)
+        datos_anticipo = json.loads(rpta_JSON)
+
+        if datos_anticipo['status']:
+            return jsonify(datos_anticipo), 201 #CREATED
+        else:
+            return jsonify(datos_anticipo), 500 #INTERNAL SERVER ERROR

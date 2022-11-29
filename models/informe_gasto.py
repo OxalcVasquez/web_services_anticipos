@@ -132,3 +132,37 @@ class Informe_gasto():
 
         else:
             return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
+
+
+def actualizarEstado(self, estado_id, descripcion, usuario_evaluador_id, id):
+            #Open connection
+            con = bd().open
+            #Configure transaction
+            con.autocommit = False
+            #Create cursor
+            cursor = con.cursor()
+
+            try:
+
+                #Generate total amount
+                sql = "UPDATE informe_gasto set estado_id= %s  WHERE id = %s"
+                cursor.execute(sql, [estado_id, id])
+                
+
+                    
+                sql2 = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s,%s)"
+                cursor.execute(sql2, [estado_id,descripcion,'I',usuario_evaluador_id, id])
+
+                #confirm the transaction
+                con.commit()
+
+                #Return response
+                return json.dumps({'status':True,'data':{'informe_id':id},'message':'Actualizacion correcta'})
+
+            except con.Error as error:
+                #Revoque all operations
+                con.rollback()
+                return json.dumps({'status':False,'data':'','message':format(error)},cls=CustomJsonEncoder)
+            finally:
+                cursor.close()
+                con.close()
