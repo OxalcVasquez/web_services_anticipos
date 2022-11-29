@@ -99,7 +99,7 @@ class Anticipo():
         cursor = con.cursor()
 
         # Preparar la consulta SQL
-        sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.usuario_id=%s and an.estado_anticipo_id = %s"
+        sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, es.descripcion AS estado , an.sede_id FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.usuario_id=%s and an.estado_anticipo_id = %s"
 
         # Ejecutar la consulta
         cursor.execute(sql, [docente_id,estado])
