@@ -14,8 +14,9 @@ def listar_tarifas_viaticos():
         if not 'sede_id' in request.form:
            return jsonify({'status': False, 'data': '', 'message': 'Falta sede'}), 403
         sede_id = request.form['sede_id']
+        dias = request.form['dias']
         obj = Tarifa()
-        rpta_tarifa_viaticos = obj.mostrar_tarifa_viaticos(sede_id)
+        rpta_tarifa_viaticos = obj.mostrar_tarifa_viaticos(sede_id,dias)
         datos = json.loads(rpta_tarifa_viaticos)
         return jsonify(datos), 200
     else:
