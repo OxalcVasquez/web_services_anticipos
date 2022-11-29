@@ -144,20 +144,44 @@ def actualizarEstado(self, estado_id, descripcion, usuario_evaluador_id, id):
 
             try:
 
-                #Generate total amount
-                sql = "UPDATE informe_gasto set estado_id= %s  WHERE id = %s"
-                cursor.execute(sql, [estado_id, id])
+                sql0 = "SELECT rol_id  FROM usuario WHERE id = %s"
+                cursor.execute(sql0,[usuario_evaluador_id])
+                datos = cursor.fetchone()
+                evaluador = datos['rol_id']
                 
-
+                if(evaluador==1):
+                    return json.dumps({'status': False, 'data': datos, 'message': 'Este usuario no puede evaluar informes de rendición'}, cls=CustomJsonEncoder)
+                else:
+                    if(estado_id=='9'):
+                        sql = "UPDATE anticipo set estado_anticipo_id= 10  WHERE id = %s"
+                        cursor.execute(sql, [id])
+                            
+                        sql2 = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
+                        cursor.execute(sql2, [10,'Finalizado','A', id])
                     
-                sql2 = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s,%s)"
-                cursor.execute(sql2, [estado_id,descripcion,'I',usuario_evaluador_id, id])
+                    if(estado_id=='8'):
+                        sql = "UPDATE anticipo set estado_anticipo_id= 4  WHERE id = %s"
+                        cursor.execute(sql, [id])
+                            
+                        sql2 = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
+                        cursor.execute(sql2, [4,'Rechazado','A', id])
+                        
+                                
 
-                #confirm the transaction
-                con.commit()
+                    #Generate total amount
+                    sql = "UPDATE informe_gasto set estado_id= %s  WHERE id = %s"
+                    cursor.execute(sql, [estado_id, id])
+                    
 
-                #Return response
-                return json.dumps({'status':True,'data':{'informe_id':id},'message':'Actualizacion correcta'})
+                        
+                    sql2 = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s,%s)"
+                    cursor.execute(sql2, [estado_id,descripcion,'I',usuario_evaluador_id, id])
+
+                    #confirm the transaction
+                    con.commit()
+
+                    #Return response
+                    return json.dumps({'status':True,'data':{'informe_id':id},'message':'Actualizacion correcta'})
 
             except con.Error as error:
                 #Revoque all operations
