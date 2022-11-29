@@ -134,7 +134,7 @@ class Informe_gasto():
             return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
 
 
-def actualizarEstado(self, estado_id, descripcion, usuario_evaluador_id, id):
+    def actualizarEstado(self, estado_id, descripcion, usuario_evaluador_id, id):
             #Open connection
             con = bd().open
             #Configure transaction
