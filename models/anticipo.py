@@ -53,7 +53,7 @@ class Anticipo():
             con.commit()
 
             #Return response
-            return json.dumps({'status':True,'data':{'anticipo_id':anticipo_id},'message':'Anticipo registered'})
+            return json.dumps({'status':True,'data':{'id':anticipo_id},'message':'Anticipo registered'})
 
         except con.Error as error:
             #Revoque all operations
