@@ -72,7 +72,7 @@ class Informe_gasto():
             #confirm the transaction
             con.commit()
             #Return response
-            return json.dumps({'status': True, 'data': {'Informe Nro ':num_informe}, 'message': 'Informe gasto created'})
+            return json.dumps({'status': True, 'data': {'num_informe':num_informe}, 'message': 'Informe gasto created'})
 
         except con.Error as error:
             #Revoque all operations
