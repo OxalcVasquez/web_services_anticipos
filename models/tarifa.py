@@ -17,7 +17,7 @@ class Tarifa():
         cursor = con.cursor()
 
         #Preparar la consulta SQL
-        sql = "SELECT  ta.id, monto_maximo*8, rubro_id, ru.nombre AS rubro, ru.se_calcula_por_dia, sede_id, se.nombre AS sede SELECT  ta.id, monto_maximo*%s, rubro_id, ru.nombre AS rubro, ru.se_calcula_por_dia, sede_id, se.nombre AS sede FROM  tarifa ta INNER	JOIN  rubro ru ON  ta.rubro_id = ru.id INNER JOIN  sede se ON  ta.sede_id = se.id WHERE se.id = %s AND ru.se_calcula_por_dia = '0' UNION SELECT  ta.id, monto_maximo, rubro_id, ru.nombre AS rubro,ru.se_calcula_por_dia, sede_id, se.nombre AS sede FROM  tarifa ta INNER	JOIN  rubro ru ON  ta.rubro_id = ru.id INNER JOIN  sede se ON  ta.sede_id = se.id WHERE se.id = %s AND ru.se_calcula_por_dia = '1'"
+        sql = "SELECT  ta.id, monto_maximo*%s, rubro_id, ru.nombre AS rubro, ru.se_calcula_por_dia, sede_id, se.nombre AS sede FROM  tarifa ta INNER	JOIN  rubro ru ON  ta.rubro_id = ru.id INNER JOIN  sede se ON  ta.sede_id = se.id WHERE se.id = %s AND ru.se_calcula_por_dia = '0' UNION SELECT  ta.id, monto_maximo, rubro_id, ru.nombre AS rubro,ru.se_calcula_por_dia, sede_id, se.nombre AS sede FROM  tarifa ta INNER	JOIN  rubro ru ON  ta.rubro_id = ru.id INNER JOIN  sede se ON  ta.sede_id = se.id WHERE se.id = %s AND ru.se_calcula_por_dia = '1'"
 
         #Ejecutar la consulta
         cursor.execute(sql,[dias,sede_id,sede_id])
