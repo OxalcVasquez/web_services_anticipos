@@ -12,7 +12,6 @@ from services.historial_anticipo import ws_historial_anticipo
 from services.informe_gasto import ws_informe_gasto
 from services.comprobante import ws_comprobante
 
-
 #Create app variable with Flask
 app = Flask(__name__)
 
