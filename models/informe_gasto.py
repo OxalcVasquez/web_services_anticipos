@@ -92,7 +92,7 @@ class Informe_gasto():
         cursor = con.cursor()
 
         # Preparar la consulta SQL
-        sql = "SELECT num_informe, fecha_hora, e.id AS estado_id, e.descripcion AS estado, total_rendido, a.descripcion AS anticipo, a.fecha_inicio, a.fecha_fin FROM informe_gasto inf INNER JOIN estado_anticipo e ON inf.estado_id = e.id INNER JOIN anticipo a ON inf.anticipo_id = a.id INNER JOIN usuario doc ON a.usuario_id = doc.id WHERE doc.id = %s; "
+        sql = "SELECT a.id as anticipo_id,num_informe, fecha_hora, e.id AS estado_id, e.descripcion AS estado, total_rendido, a.descripcion AS anticipo, a.fecha_inicio, a.fecha_fin FROM informe_gasto inf INNER JOIN estado_anticipo e ON inf.estado_id = e.id INNER JOIN anticipo a ON inf.anticipo_id = a.id INNER JOIN usuario doc ON a.usuario_id = doc.id WHERE doc.id = %s; "
 
         # Ejecutar la consulta
         cursor.execute(sql, [docente_id])
