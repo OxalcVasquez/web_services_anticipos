@@ -77,8 +77,8 @@ class Anticipo():
         tipoUsuario = datos0['rol_id']
 
         if(tipoUsuario == 1):
-            sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.usuario_id=%s"
-            
+            sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total,an.sede_id, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.usuario_id=%s"
+
             # Ejecutar la consulta
             cursor.execute(sql, [usuario_id])
 
@@ -95,7 +95,7 @@ class Anticipo():
 
             else:
                 return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
-            
+
         else:
             if(tipoUsuario == 2):
                 sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.estado_anticipo_id=1"
@@ -126,8 +126,8 @@ class Anticipo():
 
                 else:
                     return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
-        
- 
+
+
 
     def listar_anticipos_docente_estado(self, docente_id, estado):
         # Abrir la conexion
