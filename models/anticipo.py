@@ -64,32 +64,70 @@ class Anticipo():
             cursor.close()
             con.close()
 
-    def listar_anticipos_docente(self, docente_id):
+    def listar_anticipos(self, usuario_id):
         # Abrir la conexion
         con = bd().open
 
         # Crear un cursor
         cursor = con.cursor()
 
-        # Preparar la consulta SQL
-        sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.usuario_id=%s"
+        sql0 = "SELECT rol_id FROM usuario WHERE id = %s"
+        cursor.execute(sql0, [usuario_id])
+        datos0 = cursor.fetchone()
+        tipoUsuario = datos0['rol_id']
 
-        # Ejecutar la consulta
-        cursor.execute(sql, [docente_id])
+        if(tipoUsuario == 1):
+            sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.usuario_id=%s"
+            
+            # Ejecutar la consulta
+            cursor.execute(sql, [usuario_id])
 
-        # Almacenar los datos que devuelva de la conulsta
-        datos = cursor.fetchall()
+            # Almacenar los datos que devuelva de la conulsta
+            datos = cursor.fetchall()
 
-        # Cerrar el cursor y la conexion
-        cursor.close()
-        con.close()
+            # Cerrar el cursor y la conexion
+            cursor.close()
+            con.close()
 
-        # Retornar datos
-        if (datos):
-            return json.dumps({'status': True, 'data': datos, 'message': 'Listado anticipos docente'}, cls=CustomJsonEncoder)
+             # Retornar datos
+            if (datos):
+                return json.dumps({'status': True, 'data': datos, 'message': 'Listado anticipos docente'}, cls=CustomJsonEncoder)
 
+            else:
+                return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
+            
         else:
-            return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
+            if(tipoUsuario == 2):
+                sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.estado_anticipo_id=1"
+                cursor.execute(sql)
+                # Almacenar los datos que devuelva de la conulsta
+                datos = cursor.fetchall()
+                # Cerrar el cursor y la conexion
+                cursor.close()
+                con.close()
+                # Retornar datos
+                if (datos):
+                    return json.dumps({'status': True, 'data': datos, 'message': 'Listado anticipos jefe'}, cls=CustomJsonEncoder)
+
+                else:
+                    return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
+            else:
+
+                sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.estado_anticipo_id=3"
+                cursor.execute(sql)
+                # Almacenar los datos que devuelva de la conulsta
+                datos = cursor.fetchall()
+                # Cerrar el cursor y la conexion
+                cursor.close()
+                con.close()
+                # Retornar datos
+                if (datos):
+                    return json.dumps({'status': True, 'data': datos, 'message': 'Listado anticipos administrativo'}, cls=CustomJsonEncoder)
+
+                else:
+                    return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
+        
+ 
 
     def listar_anticipos_docente_estado(self, docente_id, estado):
         # Abrir la conexion

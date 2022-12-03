@@ -27,16 +27,16 @@ def registrar_anticipo():
             return jsonify(datos_anticipo), 500 #INTERNAL SERVER ERROR
 
 
-@ws_anticipo.route('/anticipos/docente/listar', methods=['POST'])
+@ws_anticipo.route('/anticipos/listar', methods=['POST'])
 @vt.validar_token
-def listar_anticipos_docente():
+def listar_anticipos():
     if request.method == 'POST':
-        if not 'docente_id' in request.form:
+        if not 'usuario_id' in request.form:
           return jsonify({'status': False, 'data': '', 'message': 'Falta docente'}), 403
         else :
-            docente_id = request.form['docente_id']
+            usuario_id = request.form['usuario_id']
             obj = Anticipo()
-            rpta_anticipos_docente = obj.listar_anticipos_docente(docente_id)
+            rpta_anticipos_docente = obj.listar_anticipos(usuario_id)
             datos = json.loads(rpta_anticipos_docente)
             return jsonify(datos), 200
     else:
