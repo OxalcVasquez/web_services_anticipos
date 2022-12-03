@@ -107,3 +107,17 @@ def actualizar_anticipo():
             return jsonify(datos_anticipo), 201 #CREATED
         else:
             return jsonify(datos_anticipo), 500 #INTERNAL SERVER ERROR
+
+@ws_anticipo.route('/anticipo/validar/pendientes', methods=['POST'])
+@vt.validar_token
+def validar_pendientes():
+    if request.method == 'POST':
+        usuario_id = request.form['usuario_id']
+        obj_anticipo = Anticipo()
+        rpta_JSON = obj_anticipo.validar_anticipos_pendientes(usuario_id)
+        datos_anticipo = json.loads(rpta_JSON)
+
+        if datos_anticipo['status']:
+            return jsonify(datos_anticipo), 200  # OK
+        else:
+            return jsonify(datos_anticipo), 500  # INTERNAL SERVER ERROR

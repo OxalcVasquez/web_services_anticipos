@@ -247,3 +247,24 @@ class Anticipo():
         finally:
             cursor.close()
             con.close()
+
+    def validar_anticipos_pendientes(self,usuario_id):
+        # Open connection
+        con = bd().open
+        # Create cursor
+        # Crear un cursor
+        cursor = con.cursor()
+        sql = "SELECT COUNT(*)>=3 validacion FROM anticipo WHERE estado_anticipo_id = 7 AND usuario_id = %s"
+        cursor.execute(sql,[usuario_id])
+        # Almacenar los datos que devuelva de la conulsta
+        datos = cursor.fetchone()
+        # Cerrar el cursor y la conexion
+        cursor.close()
+        con.close()
+
+        # Retornar datos
+        if (datos):
+            return json.dumps({'status': True, 'data': datos, 'message': 'Validacion estado'}, cls=CustomJsonEncoder)
+
+        else:
+            return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
