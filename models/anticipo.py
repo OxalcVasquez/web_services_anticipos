@@ -280,3 +280,62 @@ class Anticipo():
 
         else:
             return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
+
+    def subsanarAnticipo(self, id):
+        # Open connection
+        con = bd().open
+        # Configure transaction
+        con.autocommit = False
+        # Create cursor
+        cursor = con.cursor()
+
+        try:
+            sql = "select estado_anticipo_id from anticipo where id= %s"
+            cursor.execute(sql, [id])
+            datos = cursor.fetchone()
+            est = datos['estado_anticipo_id']
+
+            if(est == 6):
+
+                # Difference days
+                dias = datetime.strptime(
+                    self.fecha_fin, "%Y-%m-%d") - datetime.strptime(self.fecha_inicio, "%Y-%m-%d")
+
+                # Generate total amount
+
+                sql = "SELECT SUM(monto_maximo)* %s AS monto_rubros_por_dia FROM tarifa t INNER JOIN rubro r ON t.rubro_id = r.id WHERE sede_id = %s AND r.se_calcula_por_dia = %s"
+                cursor.execute(sql, [dias, self.sede_id, '1'])
+                datos = cursor.fetchone()
+                monto_rubros_por_dia = datos['monto_rubros_por_dia']
+
+                sql = "SELECT monto_maximo AS monto_rubro_fijo FROM tarifa t INNER JOIN rubro r ON t.rubro_id = r.id WHERE sede_id = %s AND r.se_calcula_por_dia = %s"
+                cursor.execute(sql, [self.sede_id, '0'])
+                datos = cursor.fetchone()
+                monto_rubro_fijo = datos['monto_rubro_fijo']
+                monto_total = float(monto_rubros_por_dia) + \
+                    float(monto_rubro_fijo)
+
+                # Prepare statement for register a new anticipo
+                sql = "UPDATE anticipo SET descripcion= %s , fecha_inicio= %s,fecha_fin=%s, monto_total=%s, estado_anticipo_id=%s, motivo_anticipo_id=%s , sede_id =%s WHERE id=%s"
+                cursor.execute(sql, [self.descripcion, self.fecha_inicio,
+                               self.fecha_fin, monto_total, 11, self.motivo_anticipo_id, self.sede_id, id])
+
+                sql = "INSERT INTO historial_anticipo(estado_id,tipo,anticipo_id) VALUES (%s,%s,%s)"
+                cursor.execute(sql, [11, 'A', id])
+
+                # confirm the transaction
+                con.commit()
+
+                # Return response
+                return json.dumps({'status': True, 'data': {'anticipo_id': id}, 'message': 'Anticipo actualizado'})
+
+            else:
+                return json.dumps({'status': False, 'data': datos, 'message': 'No se puede actualizar este anticipo.'}, cls=CustomJsonEncoder)
+
+        except con.Error as error:
+            # Revoque all operations
+            con.rollback()
+            return json.dumps({'status': False, 'data': '', 'message': format(error)}, cls=CustomJsonEncoder)
+        finally:
+            cursor.close()
+            con.close()
