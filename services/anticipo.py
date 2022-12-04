@@ -94,12 +94,11 @@ def listar_anticipos_admin():
 @vt.validar_token #f
 def actualizar_anticipo():
     if request.method == 'POST':
-        descripcion = request.form['descripcion']
         estado_anticipo_id = request.form['estado_anticipo_id']
         id = request.form['id']
         usuario_id = request.form['usuario_evaluador_id']
 
-        obj_anticipo = Anticipo(descripcion)
+        obj_anticipo = Anticipo()
         rpta_JSON = obj_anticipo.actualizarEstado(estado_anticipo_id, id, usuario_id)
         datos_anticipo = json.loads(rpta_JSON)
 
