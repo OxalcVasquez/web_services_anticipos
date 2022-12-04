@@ -140,6 +140,6 @@ def subsanar_anticipo():
         datos_anticipo = json.loads(rpta_JSON)
 
         if datos_anticipo['status']:
-            return jsonify(datos_anticipo), 201  # CREATED
+            return jsonify(datos_anticipo), 200  # OK
         else:
             return jsonify(datos_anticipo), 500  # INTERNAL SERVER ERROR
