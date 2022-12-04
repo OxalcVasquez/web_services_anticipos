@@ -13,7 +13,7 @@ class Historial_anticipo():
         self.anticipo_id = anticipo_id
 
 
-    def mostrar_historial_anticipo(self, anticipo_id,tipo):
+    def mostrar_historial_anticipo(self, anticipo_id,tipo,ultima_instancia=0):
         #Abrir la conexion
         con = bd().open
 
@@ -21,14 +21,14 @@ class Historial_anticipo():
         cursor = con.cursor()
 
         #Preparar la consulta SQL
-        sql = "SELECT e.descripcion AS estado, ha.descripcion, fecha_hora, tipo, CONCAT(u.nombres, ', ', u.apellidos) AS evaluador, r.nombre AS instancia FROM  historial_anticipo ha INNER JOIN estado_anticipo e ON(ha.estado_id=e.id) INNER JOIN anticipo a ON(ha.anticipo_id=a.id) LEFT JOIN usuario u ON(ha.usuario_evaluador_id=u.id) LEFT JOIN rol r ON(r.id=u.id)  WHERE a.id = %s AND tipo = %s"
+        if (ultima_instancia==0) :
+            sql = "SELECT e.descripcion AS estado, ha.descripcion, fecha_hora, tipo, CONCAT(u.nombres, ', ', u.apellidos) AS evaluador, r.nombre AS instancia FROM  historial_anticipo ha INNER JOIN estado_anticipo e ON(ha.estado_id=e.id) INNER JOIN anticipo a ON(ha.anticipo_id=a.id) LEFT JOIN usuario u ON(ha.usuario_evaluador_id=u.id) LEFT JOIN rol r ON(r.id=u.id)  WHERE a.id = %s AND tipo = %s"
+        else :
+            sql = "SELECT e.descripcion AS estado, ha.descripcion, fecha_hora, tipo, CONCAT(u.nombres, ', ', u.apellidos) AS evaluador, r.nombre AS instancia FROM  historial_anticipo ha INNER JOIN estado_anticipo e ON(ha.estado_id=e.id) INNER JOIN anticipo a ON(ha.anticipo_id=a.id) LEFT JOIN usuario u ON(ha.usuario_evaluador_id=u.id) LEFT JOIN rol r ON(r.id=u.id)  WHERE a.id = %s AND tipo = %s ORDER BY fecha_hora DESC LIMIT 1"
 
-        #Ejecutar la consulta
-        cursor.execute(sql, [anticipo_id,tipo])
 
-        #Almacenar los datos que devuelva de la conulsta
-        datos = cursor.fetchall()
-
+        cursor.execute(sql, [anticipo_id, tipo])
+        datos = cursor.fetchone()
         #Cerrar el cursor y la conexion
         cursor.close()
         con.close()
