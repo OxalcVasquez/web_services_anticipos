@@ -207,46 +207,58 @@ class Anticipo():
             return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
 
     def actualizarEstado(self, estado_anticipo_id, id, usuario_id):
-        # Open connection
-        con = bd().open
-        # Configure transaction
-        con.autocommit = False
-        # Create cursor
-        cursor = con.cursor()
+            #Open connection
+            con = bd().open
+            #Configure transaction
+            con.autocommit = False
+            #Create cursor
+            cursor = con.cursor()
 
-        try:
-            sql0 = "SELECT rol_id  FROM usuario WHERE id = %s"
-            cursor.execute(sql0, [usuario_id])
-            datos = cursor.fetchone()
-            evaluador = datos['rol_id']
+            try:
+                sql0 = "SELECT rol_id  FROM usuario WHERE id = %s"
+                cursor.execute(sql0,[usuario_id])
+                datos = cursor.fetchone()
+                evaluador = datos['rol_id']
 
-            if(evaluador == 1):
-                return json.dumps({'status': False, 'data': datos, 'message': 'Este usuario no puede evaluar anticipos'}, cls=CustomJsonEncoder)
-            else:
-                if(evaluador == 3 and estado_anticipo_id == '4'):
-                    return json.dumps({'status': False, 'data': datos, 'message': 'Este usuario no puede rechazar el anticipo'}, cls=CustomJsonEncoder)
+                sql="select estado_anticipo_id from anticipo where id= %s"
+                cursor.execute(sql,[id])
+                datos = cursor.fetchone()
+                est=datos['estado_anticipo_id']
+
+                
+                if(est != 10 and est != 4):
+
+                    if(evaluador==1):
+                        return json.dumps({'status': False, 'data': datos, 'message': 'Este usuario no puede evaluar anticipos'}, cls=CustomJsonEncoder)
+                    else:
+                        if(evaluador==3 and estado_anticipo_id=='4'):
+                            return json.dumps({'status': False, 'data': datos, 'message': 'Este usuario no puede rechazar el anticipo'}, cls=CustomJsonEncoder)
+                        else:
+
+                            #Generate total amount
+                            sql = "UPDATE anticipo set estado_anticipo_id= %s  WHERE id = %s"
+                            cursor.execute(sql, [estado_anticipo_id, id])
+                            
+
+                                
+                            sql2 = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s,%s)"
+                            cursor.execute(sql2, [estado_anticipo_id,self.descripcion,'A',usuario_id, id])
+
+                            #confirm the transaction
+                            con.commit()
+                                    #Return response
+                            return json.dumps({'status':True,'data':{'anticipo_id':id},'message':'Actualizacion correcta'})
                 else:
+                    return json.dumps({'status': False, 'data': datos, 'message': 'Este anticipo no puede ser modificado.'}, cls=CustomJsonEncoder)
 
-                    # Generate total amount
-                    sql = "UPDATE anticipo set estado_anticipo_id= %s  WHERE id = %s"
-                    cursor.execute(sql, [estado_anticipo_id, id])
-
-                    sql2 = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s,%s)"
-                    cursor.execute(
-                        sql2, [estado_anticipo_id, self.descripcion, 'A', usuario_id, id])
-
-                    # confirm the transaction
-                    con.commit()
-                    # Return response
-            return json.dumps({'status': True, 'data': {'anticipo_id': id}, 'message': 'Actualizacion correcta'})
-
-        except con.Error as error:
-            # Revoque all operations
-            con.rollback()
-            return json.dumps({'status': False, 'data': '', 'message': format(error)}, cls=CustomJsonEncoder)
-        finally:
-            cursor.close()
-            con.close()
+            
+            except con.Error as error:
+                #Revoque all operations
+                con.rollback()
+                return json.dumps({'status':False,'data':'','message':format(error)},cls=CustomJsonEncoder)
+            finally:
+                cursor.close()
+                con.close()
 
     def validar_anticipos_pendientes(self,usuario_id):
         # Open connection
