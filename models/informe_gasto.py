@@ -159,7 +159,7 @@ class Informe_gasto():
                 cursor.execute(sql,[id])
                 datos = cursor.fetchone()
                 anticipo_id=datos['anticipo_id']
-                
+
                 if(est != 10 and est != 4 and est != 8 and est != 6 and est != 9):
                     print(est)
                     if(evaluador==1):
@@ -168,34 +168,34 @@ class Informe_gasto():
                         if(estado_id=='9'):
                             sql = "UPDATE anticipo set estado_anticipo_id= 10  WHERE id = %s"
                             cursor.execute(sql, [anticipo_id])
-                                
+
                             sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
                             cursor.execute(sql, [10,'Finalizado','A', anticipo_id])
-                        
+
                         if(estado_id=='8'):
                             sql = "UPDATE anticipo set estado_anticipo_id= 4  WHERE id = %s"
                             cursor.execute(sql, [anticipo_id])
-                                
+
                             sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
                             cursor.execute(sql, [4,'Rechazado','A', anticipo_id])
-                            
-                                    
+
+
 
                         #Generate total amount
                         sql = "UPDATE informe_gasto set estado_id= %s  WHERE id = %s"
                         cursor.execute(sql, [estado_id, id])
-                        
 
-                            
+
+
                         sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s,%s)"
                         cursor.execute(sql, [estado_id,descripcion,'I',usuario_evaluador_id, anticipo_id])
-                    
+
                         #confirm the transaction
                         con.commit()
 
                         #Return response
                         return json.dumps({'status':True,'data':{'informe_id':id},'message':'Actualizacion correcta'})
-                
+
                 else:
                     return json.dumps({'status': False, 'data': datos, 'message': 'Este informe no puede ser modificado.'}, cls=CustomJsonEncoder)
 

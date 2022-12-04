@@ -327,7 +327,7 @@ class Anticipo():
                 con.commit()
 
                 # Return response
-                return json.dumps({'status': True, 'data': {'anticipo_id': id}, 'message': 'Anticipo actualizado'})
+                return json.dumps({'status': True, 'data': {'id': id}, 'message': 'Anticipo actualizado'})
 
             else:
                 return json.dumps({'status': False, 'data': datos, 'message': 'No se puede actualizar este anticipo.'}, cls=CustomJsonEncoder)
