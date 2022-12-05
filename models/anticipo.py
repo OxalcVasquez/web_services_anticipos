@@ -98,7 +98,7 @@ class Anticipo():
 
         else:
             if(tipoUsuario == 2):
-                sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.estado_anticipo_id=1 or an.estado_anticipo_id=11"
+                sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.estado_anticipo_id=1 OR (an.estado_anticipo_id = 11 AND an.id IN (SELECT DISTINCT anticipo_id from historial_anticipo ha INNER JOIN usuario u ON ha.usuario_evaluador_id = u.id WHERE estado_id = 6 AND tipo = 'A' AND u.rol_id = 2));"
                 cursor.execute(sql)
                 # Almacenar los datos que devuelva de la conulsta
                 datos = cursor.fetchall()
@@ -113,7 +113,7 @@ class Anticipo():
                     return json.dumps({'status': False, 'data': [], 'message': 'No hay datos para mostrar'})
             else:
 
-                sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.estado_anticipo_id=3"
+                sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.estado_anticipo_id=3 OR (an.estado_anticipo_id = 11 AND an.id IN (SELECT DISTINCT anticipo_id from historial_anticipo ha INNER JOIN usuario u ON ha.usuario_evaluador_id = u.id WHERE estado_id = 6 AND tipo = 'A' AND u.rol_id = 3))"
                 cursor.execute(sql)
                 # Almacenar los datos que devuelva de la conulsta
                 datos = cursor.fetchall()

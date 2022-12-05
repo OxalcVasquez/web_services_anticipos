@@ -58,16 +58,16 @@ def listar_informe_gasto_jefe_admin():
 @vt.validar_token #f
 def actualizar_informe():
     if request.method == 'POST':
-        descripcion = request.form['descripcion']
         estado_id = request.form['estado_id']
         id = request.form['id']
         usuario_evaluador_id= request.form['usuario_evaluador_id']
 
         obj_informe = Informe_gasto()
-        rpta_JSON = obj_informe.actualizarEstado(estado_id, descripcion, usuario_evaluador_id, id)
+        
+        rpta_JSON = obj_informe.aceptarRechazarRendicion(int(estado_id), int(usuario_evaluador_id), id)
         datos_informe_gasto = json.loads(rpta_JSON)
 
         if datos_informe_gasto['status']:
-            return jsonify(datos_informe_gasto), 201  # CREATED
+            return jsonify(datos_informe_gasto), 200  # CREATED
         else:
             return jsonify(datos_informe_gasto), 500  # INTERNAL SERVER ERROR

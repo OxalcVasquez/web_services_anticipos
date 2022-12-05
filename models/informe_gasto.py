@@ -138,7 +138,7 @@ class Informe_gasto():
             return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
 
 
-    def actualizarEstado(self, estado_id, descripcion, usuario_evaluador_id, id):
+    def aceptarRechazarRendicion(self, estado_id,usuario_evaluador_id, id):
             #Open connection
             con = bd().open
             #Configure transaction
@@ -152,54 +152,80 @@ class Informe_gasto():
                 datos = cursor.fetchone()
                 evaluador = datos['rol_id']
 
+                print(evaluador)
                 #
-                sql="select estado_id from informe_gasto where id= %s"
-                cursor.execute(sql,[id])
+                sql2="select estado_id from informe_gasto where id= %s"
+                cursor.execute(sql2,[id])
                 datos = cursor.fetchone()
                 est=datos['estado_id']
-
+                print(est)
                 #
                 sql="select anticipo_id from informe_gasto where id= %s"
                 cursor.execute(sql,[id])
                 datos = cursor.fetchone()
                 anticipo_id=datos['anticipo_id']
+                print(anticipo_id)
 
+                #Generate total amount
+                     
+                
                 if(est != 10 and est != 4 and est != 8 and est != 6 and est != 9):
-                    print(est)
-                    if(evaluador==1):
+                    
+                    print(estado_id)
+                    if(evaluador==1):   
                         return json.dumps({'status': False, 'data': datos, 'message': 'Este usuario no puede evaluar informes de rendición'}, cls=CustomJsonEncoder)
                     else:
-                        if(estado_id=='9'):
-                            sql = "UPDATE anticipo set estado_anticipo_id= 10  WHERE id = %s"
-                            cursor.execute(sql, [anticipo_id])
+                        if(estado_id==9): #rendicion a
+                            print('hola')
+                            sql = "UPDATE informe_gasto set estado_id= 7  WHERE id = %s"
+                            cursor.execute(sql, [id])
+                                                         
+                            sql = "INSERT INTO historial_anticipo(estado_id, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s)"
+                            cursor.execute(sql, [9,'I',usuario_evaluador_id, anticipo_id])
 
-                            sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
-                            cursor.execute(sql, [10,'Finalizado','A', anticipo_id])
 
-                        if(estado_id=='8'):
+                        
+                        if(estado_id==8): #rendicion r
                             sql = "UPDATE anticipo set estado_anticipo_id= 4  WHERE id = %s"
                             cursor.execute(sql, [anticipo_id])
-
+                                
                             sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
                             cursor.execute(sql, [4,'Rechazado','A', anticipo_id])
 
+                            sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
+                            cursor.execute(sql, [8,'Rechazado','I', anticipo_id])
 
+                            sql = "UPDATE informe_gasto set estado_id= 8  WHERE id = %s"
+                            cursor.execute(sql, [id])
 
-                        #Generate total amount
-                        sql = "UPDATE informe_gasto set estado_id= %s  WHERE id = %s"
-                        cursor.execute(sql, [estado_id, id])
+                        if (evaluador==2):
+                            sql = "SELECT COUNT(*) AS aprobado from historial_anticipo ha INNER JOIN usuario u ON u.id = ha.usuario_evaluador_id WHERE estado_id = 9 AND anticipo_id = %s AND tipo = 'I' AND u.rol_id=3"
+                        else: 
+                            sql = "SELECT COUNT(*) AS aprobado from historial_anticipo ha INNER JOIN usuario u ON u.id = ha.usuario_evaluador_id WHERE estado_id = 9 AND anticipo_id = %s AND tipo = 'I' AND u.rol_id=2"    
+                            
+                        cursor.execute(sql,[anticipo_id])
+                        datos = cursor.fetchone()
+                        ap1=datos['aprobado']
+                        print(ap1)
+                        
+                        
+                                    
 
+                        if(ap1>=1):
+                            sql = "UPDATE anticipo set estado_anticipo_id= 10  WHERE id = %s"
+                            cursor.execute(sql, [anticipo_id])
 
+                            sql = "UPDATE informe_gasto set estado_id= 9  WHERE id = %s"
+                            cursor.execute(sql, [id])
 
-                        sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s,%s)"
-                        cursor.execute(sql, [estado_id,descripcion,'I',usuario_evaluador_id, anticipo_id])
-
-                        #confirm the transaction
+                            sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
+                            cursor.execute(sql, [10,'Finalizado','A', anticipo_id])
+ 
+                #confirm the transaction
                         con.commit()
 
-                        #Return response
+                 #Return response
                         return json.dumps({'status':True,'data':{'informe_id':id},'message':'Actualizacion correcta'})
-
                 else:
                     return json.dumps({'status': False, 'data': datos, 'message': 'Este informe no puede ser modificado.'}, cls=CustomJsonEncoder)
 
