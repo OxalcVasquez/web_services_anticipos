@@ -95,11 +95,12 @@ def listar_anticipos_admin():
 def actualizar_anticipo():
     if request.method == 'POST':
         estado_anticipo_id = request.form['estado_anticipo_id']
+        descripcion = request.form['descripcion']
         id = request.form['id']
         usuario_id = request.form['usuario_evaluador_id']
 
         obj_anticipo = Anticipo()
-        rpta_JSON = obj_anticipo.actualizarEstado(estado_anticipo_id, id, usuario_id)
+        rpta_JSON = obj_anticipo.actualizarEstado(estado_anticipo_id, descripcion, id, usuario_id)
         datos_anticipo = json.loads(rpta_JSON)
 
         if datos_anticipo['status']:

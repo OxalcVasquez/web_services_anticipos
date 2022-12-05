@@ -206,7 +206,7 @@ class Anticipo():
         else:
             return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
 
-    def actualizarEstado(self, estado_anticipo_id, id, usuario_id):
+    def actualizarEstado(self, estado_anticipo_id, descripcion, id, usuario_id):
             #Open connection
             con = bd().open
             #Configure transaction
@@ -239,10 +239,8 @@ class Anticipo():
                             sql = "UPDATE anticipo set estado_anticipo_id= %s  WHERE id = %s"
                             cursor.execute(sql, [estado_anticipo_id, id])
 
-
-
                             sql2 = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s,%s)"
-                            cursor.execute(sql2, [estado_anticipo_id,self.descripcion,'A',usuario_id, id])
+                            cursor.execute(sql2, [estado_anticipo_id,descripcion,'A',usuario_id, id])
 
                             #confirm the transaction
                             con.commit()
