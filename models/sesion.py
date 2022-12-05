@@ -13,7 +13,7 @@ class Sesion():
       #Creation cursor
       cursor = con.cursor()
       #Query sql
-      sql = 'SELECT u.*, r.nombre AS rol FROM usuario u  INNER JOIN rol r ON r.id = u.rol_id WHERE email = %s and password = %s'
+      sql = "SELECT u.*, r.nombre AS rol, CONCAT('/static/imgs-roles/', u.rol_id, '.jpg') as imagen FROM usuario u  INNER JOIN rol r ON r.id = u.rol_id WHERE email = %s and password = %s"
       #Execute SQL query
       cursor.execute(sql,[self.email,self.password])
       #Get data from cursor
