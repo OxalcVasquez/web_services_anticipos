@@ -117,7 +117,7 @@ class Informe_gasto():
 
         # Crear un cursor
         cursor = con.cursor()
-        sql = "SELECT num_informe, fecha_hora, e.id AS estado_id, e.descripcion AS estado, total_rendido, a.descripcion AS anticipo, a.fecha_inicio, a.fecha_fin, CONCAT(doc.nombres, ', ', doc.apellidos) AS docente FROM informe_gasto inf INNER JOIN estado_anticipo e ON inf.estado_id = e.id INNER JOIN anticipo a ON inf.anticipo_id = a.id INNER JOIN usuario doc ON a.usuario_id = doc.id"
+        sql = "SELECT inf.id AS id_informe, num_informe, fecha_hora, e.id AS estado_id, e.descripcion AS estado, total_rendido, a.descripcion AS anticipo, a.fecha_inicio, a.fecha_fin, CONCAT(doc.nombres, ', ', doc.apellidos) AS docente FROM informe_gasto inf INNER JOIN estado_anticipo e ON inf.estado_id = e.id INNER JOIN anticipo a ON inf.anticipo_id = a.id INNER JOIN usuario doc ON a.usuario_id = doc.id"
         cursor.execute(sql)
         # Almacenar los datos que devuelva de la conulsta
         datos = cursor.fetchall()
