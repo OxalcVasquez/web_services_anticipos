@@ -69,10 +69,14 @@ class Informe_gasto():
 
             sql = "UPDATE informe_gasto SET total_rendido = %s WHERE id = %s"
             cursor.execute(sql, [monto_rendido, informe_gasto_id])
+
+            sql = f"SELECT CONCAT(u.nombres, ' ', u.apellidos) AS docente, DATE_FORMAT(ha.fecha_hora,'%d/%m/%Y') AS fecha FROM historial_anticipo AS ha INNER JOIN anticipo AS a ON (ha.anticipo_id = a.id) INNER JOIN usuario AS u ON (a.usuario_id = u.id) WHERE ha.anticipo_id = {self.anticipo_id} AND ha.estado_id = 1 AND ha.tipo = 'A'"
+            cursor.execute(sql)
+            datos = cursor.fetchall()
             #confirm the transaction
             con.commit()
             #Return response
-            return json.dumps({'status': True, 'data': {'num_informe':num_informe}, 'message': 'Informe gasto created'})
+            return json.dumps({'status': True, 'data': {'num_informe':num_informe, 'docente': datos["docente"], "anticipo_id": self.anticipo_id, 'fecha': datos["fecha"]}, 'message': 'Informe gasto created'})
 
         except con.Error as error:
             #Revoque all operations

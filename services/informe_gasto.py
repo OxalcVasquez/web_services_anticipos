@@ -20,7 +20,7 @@ def registrar():
         datos_informe_gasto = json.loads(rpta_JSON)
 
         if datos_informe_gasto['status']:
-            fcm.sendPush("Registro infrome gasto", "Se registró un nuevo informe", "admin")
+            fcm.sendPush("Registro informe de rendición de gasto", f"El docente: {datos_informe_gasto['data'][0]['docente']} ha registrado su rendición de gastos del anticipo N.{datos_informe_gasto['data'][0]['anticipo_id']} otorgado el {datos_informe_gasto['data'][0]['fecha']}", "admin")
             return jsonify(datos_informe_gasto), 201  # CREATED
         else:
             return jsonify(datos_informe_gasto), 500  # INTERNAL SERVER ERROR
