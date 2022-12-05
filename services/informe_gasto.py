@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify
 from models.informe_gasto import Informe_gasto
 import json
 import validar_token as vt
+import FCMManager as fcm
 
 ws_informe_gasto = Blueprint('ws_informe_gasto', __name__)
 
@@ -19,6 +20,7 @@ def registrar():
         datos_informe_gasto = json.loads(rpta_JSON)
 
         if datos_informe_gasto['status']:
+            fcm.sendPush("Registro infrome gasto", "Se registró un nuevo informe", "admin")
             return jsonify(datos_informe_gasto), 201  # CREATED
         else:
             return jsonify(datos_informe_gasto), 500  # INTERNAL SERVER ERROR

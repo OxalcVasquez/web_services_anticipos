@@ -3,12 +3,8 @@ from flask import Blueprint, request, jsonify
 from models.comprobante import Comprobante
 import json
 import validar_token as vt
-from werkzeug.utils import secure_filename
-from os.path import join, dirname, realpath
 
 ws_comprobante = Blueprint('ws_comprobante', __name__)
-
-UPLOAD_FOLDER = join(dirname(realpath(__file__)), 'static\\imgs-comprobante')
 
 @ws_comprobante.route('/comprobante/listado', methods=['POST'])
 @vt.validar_token
