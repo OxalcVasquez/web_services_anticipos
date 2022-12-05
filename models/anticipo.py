@@ -98,7 +98,7 @@ class Anticipo():
 
         else:
             if(tipoUsuario == 2):
-                sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.estado_anticipo_id=1"
+                sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.estado_anticipo_id=1 or an.estado_anticipo_id=11"
                 cursor.execute(sql)
                 # Almacenar los datos que devuelva de la conulsta
                 datos = cursor.fetchall()
@@ -110,7 +110,7 @@ class Anticipo():
                     return json.dumps({'status': True, 'data': datos, 'message': 'Listado anticipos jefe'}, cls=CustomJsonEncoder)
 
                 else:
-                    return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
+                    return json.dumps({'status': False, 'data': [], 'message': 'No hay datos para mostrar'})
             else:
 
                 sql = "SELECT an.id,an.descripcion, an.fecha_inicio, an.fecha_fin, an.monto_total, CONCAT('/static/imgs-sede/', an.sede_id, '.jpg') AS img, es.descripcion AS estado FROM anticipo AS an INNER JOIN estado_anticipo AS es on (es.id = an.estado_anticipo_id) WHERE an.estado_anticipo_id=3"
@@ -125,7 +125,7 @@ class Anticipo():
                     return json.dumps({'status': True, 'data': datos, 'message': 'Listado anticipos administrativo'}, cls=CustomJsonEncoder)
 
                 else:
-                    return json.dumps({'status': False, 'data': '', 'message': 'No hay datos para mostrar'})
+                    return json.dumps({'status': False, 'data': [], 'message': 'No hay datos para mostrar'})
 
 
 
