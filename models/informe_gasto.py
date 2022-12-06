@@ -175,52 +175,52 @@ class Informe_gasto():
                     if(evaluador==1):
                         return json.dumps({'status': False, 'data': datos, 'message': 'Este usuario no puede evaluar informes de rendición'}, cls=CustomJsonEncoder)
                     else:
-                        if(estado_id==9): #rendicion a
+                        if(estado_id==2): #rendicion a
                             print('hola')
                             sql = "UPDATE informe_gasto set estado_id= 7  WHERE id = %s"
                             cursor.execute(sql, [id])
-
+                                                         
                             sql = "INSERT INTO historial_anticipo(estado_id, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s)"
-                            cursor.execute(sql, [9,'I',usuario_evaluador_id, anticipo_id])
+                            cursor.execute(sql, [2,'I',usuario_evaluador_id, anticipo_id])
 
 
-
-                        if(estado_id==8): #rendicion r
-                            sql = "UPDATE anticipo set estado_anticipo_id= 4  WHERE id = %s"
+                        
+                        if(estado_id==4): #rendicion r
+                            sql = "UPDATE anticipo set estado_anticipo_id= 8  WHERE id = %s"
                             cursor.execute(sql, [anticipo_id])
+                                
+                            sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
+                            cursor.execute(sql, [8,'Rechazado','A', anticipo_id])
 
                             sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
-                            cursor.execute(sql, [4,'Rechazado','A', anticipo_id])
+                            cursor.execute(sql, [4,'Rechazado','I', anticipo_id])
 
-                            sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
-                            cursor.execute(sql, [8,'Rechazado','I', anticipo_id])
-
-                            sql = "UPDATE informe_gasto set estado_id= 8  WHERE id = %s"
+                            sql = "UPDATE informe_gasto set estado_id= 4  WHERE id = %s"
                             cursor.execute(sql, [id])
 
                         if (evaluador==2):
-                            sql = "SELECT COUNT(*) AS aprobado from historial_anticipo ha INNER JOIN usuario u ON u.id = ha.usuario_evaluador_id WHERE estado_id = 9 AND anticipo_id = %s AND tipo = 'I' AND u.rol_id=3"
-                        else:
-                            sql = "SELECT COUNT(*) AS aprobado from historial_anticipo ha INNER JOIN usuario u ON u.id = ha.usuario_evaluador_id WHERE estado_id = 9 AND anticipo_id = %s AND tipo = 'I' AND u.rol_id=2"
-
+                            sql = "SELECT COUNT(*) AS aprobado from historial_anticipo ha INNER JOIN usuario u ON u.id = ha.usuario_evaluador_id WHERE estado_id = 2 AND anticipo_id = %s AND tipo = 'I' AND u.rol_id=3"
+                        else: 
+                            sql = "SELECT COUNT(*) AS aprobado from historial_anticipo ha INNER JOIN usuario u ON u.id = ha.usuario_evaluador_id WHERE estado_id = 2 AND anticipo_id = %s AND tipo = 'I' AND u.rol_id=2"    
+                            
                         cursor.execute(sql,[anticipo_id])
                         datos = cursor.fetchone()
                         ap1=datos['aprobado']
                         print(ap1)
-
-
-
+                        
+                        
+                                    
 
                         if(ap1>=1):
                             sql = "UPDATE anticipo set estado_anticipo_id= 10  WHERE id = %s"
                             cursor.execute(sql, [anticipo_id])
 
-                            sql = "UPDATE informe_gasto set estado_id= 9  WHERE id = %s"
+                            sql = "UPDATE informe_gasto set estado_id= 2  WHERE id = %s"
                             cursor.execute(sql, [id])
 
                             sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
                             cursor.execute(sql, [10,'Finalizado','A', anticipo_id])
-
+ 
                 #confirm the transaction
                         con.commit()
 
