@@ -72,7 +72,7 @@ class Informe_gasto():
 
             sql = f"SELECT CONCAT(u.nombres, ' ', u.apellidos) AS docente, DATE_FORMAT(ha.fecha_hora,'%d/%m/%Y') AS fecha FROM historial_anticipo AS ha INNER JOIN anticipo AS a ON (ha.anticipo_id = a.id) INNER JOIN usuario AS u ON (a.usuario_id = u.id) WHERE ha.anticipo_id = {self.anticipo_id} AND ha.estado_id = 1 AND ha.tipo = 'A'"
             cursor.execute(sql)
-            datos = cursor.fetchall()
+            datos = cursor.fetchone()
             #confirm the transaction
             con.commit()
             #Return response
@@ -167,28 +167,28 @@ class Informe_gasto():
                 print(anticipo_id)
 
                 #Generate total amount
-                     
-                
+
+
                 if(est != 10 and est != 4 and est != 8 and est != 6 and est != 9):
-                    
+
                     print(estado_id)
-                    if(evaluador==1):   
+                    if(evaluador==1):
                         return json.dumps({'status': False, 'data': datos, 'message': 'Este usuario no puede evaluar informes de rendición'}, cls=CustomJsonEncoder)
                     else:
                         if(estado_id==9): #rendicion a
                             print('hola')
                             sql = "UPDATE informe_gasto set estado_id= 7  WHERE id = %s"
                             cursor.execute(sql, [id])
-                                                         
+
                             sql = "INSERT INTO historial_anticipo(estado_id, tipo, usuario_evaluador_id,anticipo_id) VALUES (%s,%s,%s,%s)"
                             cursor.execute(sql, [9,'I',usuario_evaluador_id, anticipo_id])
 
 
-                        
+
                         if(estado_id==8): #rendicion r
                             sql = "UPDATE anticipo set estado_anticipo_id= 4  WHERE id = %s"
                             cursor.execute(sql, [anticipo_id])
-                                
+
                             sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
                             cursor.execute(sql, [4,'Rechazado','A', anticipo_id])
 
@@ -200,16 +200,16 @@ class Informe_gasto():
 
                         if (evaluador==2):
                             sql = "SELECT COUNT(*) AS aprobado from historial_anticipo ha INNER JOIN usuario u ON u.id = ha.usuario_evaluador_id WHERE estado_id = 9 AND anticipo_id = %s AND tipo = 'I' AND u.rol_id=3"
-                        else: 
-                            sql = "SELECT COUNT(*) AS aprobado from historial_anticipo ha INNER JOIN usuario u ON u.id = ha.usuario_evaluador_id WHERE estado_id = 9 AND anticipo_id = %s AND tipo = 'I' AND u.rol_id=2"    
-                            
+                        else:
+                            sql = "SELECT COUNT(*) AS aprobado from historial_anticipo ha INNER JOIN usuario u ON u.id = ha.usuario_evaluador_id WHERE estado_id = 9 AND anticipo_id = %s AND tipo = 'I' AND u.rol_id=2"
+
                         cursor.execute(sql,[anticipo_id])
                         datos = cursor.fetchone()
                         ap1=datos['aprobado']
                         print(ap1)
-                        
-                        
-                                    
+
+
+
 
                         if(ap1>=1):
                             sql = "UPDATE anticipo set estado_anticipo_id= 10  WHERE id = %s"
@@ -220,7 +220,7 @@ class Informe_gasto():
 
                             sql = "INSERT INTO historial_anticipo(estado_id, descripcion, tipo,anticipo_id) VALUES (%s,%s,%s,%s)"
                             cursor.execute(sql, [10,'Finalizado','A', anticipo_id])
- 
+
                 #confirm the transaction
                         con.commit()
 
